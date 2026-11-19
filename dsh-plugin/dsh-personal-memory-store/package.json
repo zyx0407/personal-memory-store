@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "dsh-personal-memory-store",
   "version": "1.0.0",
   "description": "Personal memory store tools for DSH: init and doctor a plain-text memory store per Personal Memory Store Specification 1.0.",
