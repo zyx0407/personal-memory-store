@@ -1,0 +1,142 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Personal Memory Store Specification · architecture</title>
+<style>
+  :root {
+    --bg: #f4efe6; --card: #fbf8f1;
+    --ink: #2b2926; --ink-2: #43403a; --muted: #5f5a4f;
+    --line: #d8cfbe; --wire: #9a8f7c; --accent: #b08a3e;
+    --mono: "Cascadia Mono", Consolas, "Noto Sans SC", monospace;
+    --sans: "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); }
+  body { font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  .canvas { position: relative; width: 1400px; height: 760px; }
+  svg.wires { position: absolute; inset: 0; width: 1400px; height: 760px; }
+  .box { position: absolute; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 11px 14px; }
+  .box.dashed { border-style: dashed; border-color: var(--wire); background: transparent; }
+  .t { font-size: 14px; font-weight: 500; letter-spacing: .02em; }
+  .s { font-family: var(--mono); font-size: 10px; letter-spacing: .05em; color: var(--muted); margin-top: 4px; line-height: 1.7; }
+  .g { position: absolute; font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; color: var(--muted); }
+  .h1 { position: absolute; left: 40px; top: 20px; font-size: 15px; font-weight: 600; letter-spacing: .04em; }
+  .h1 span { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: .08em; margin-left: 12px; }
+  .lbl { position: absolute; font-family: var(--mono); font-size: 9.5px; letter-spacing: .04em; color: var(--muted); }
+  .legend { position: absolute; left: 40px; bottom: 20px; display: flex; gap: 26px;
+            font-family: var(--mono); font-size: 10px; letter-spacing: .06em; color: var(--muted); }
+  .legend i { display: inline-block; width: 26px; height: 0; border-top: 1px solid var(--ink-2); margin-right: 8px; vertical-align: 4px; }
+  .legend .dash { border-top: 1px dashed var(--wire); }
+</style>
+</head>
+<body>
+<div class="canvas">
+
+  <svg class="wires" viewBox="0 0 1400 760" fill="none">
+    <defs>
+      <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="#5b5448"/>
+      </marker>
+      <marker id="ard" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="#9a8f7c"/>
+      </marker>
+    </defs>
+
+    <!-- harness → core: injection -->
+    <path d="M380 132 H452" stroke="#5b5448" stroke-width="1" marker-end="url(#ar)"/>
+    <!-- cli → topics: read / write -->
+    <path d="M380 226 H452" stroke="#5b5448" stroke-width="1" marker-end="url(#ar)"/>
+    <!-- core → topics: index lines -->
+    <path d="M560 180 V194" stroke="#9a8f7c" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#ard)"/>
+    <!-- topics → derived: index / rebuild -->
+    <path d="M585 298 V312" stroke="#9a8f7c" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#ard)"/>
+    <!-- core → contracts: satisfies -->
+    <path d="M980 138 H1052" stroke="#9a8f7c" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#ard)"/>
+  </svg>
+
+  <div class="h1">Personal Memory Store Specification · architecture<span>v1.0 · four zones · check-only · conformance</span></div>
+
+  <!-- left: consumers -->
+  <div class="g" style="left:40px;top:62px;">CONSUMERS · HOW IT IS USED</div>
+  <div class="box" style="left:40px;top:96px;width:340px;height:72px;">
+    <div class="t">Agent / harness</div>
+    <div class="s">Injects the core file every turn; calls commands</div>
+  </div>
+  <div class="box" style="left:40px;top:190px;width:340px;height:72px;">
+    <div class="t">CLI</div>
+    <div class="s">init · doctor</div>
+  </div>
+  <div class="box dashed" style="left:40px;top:284px;width:340px;height:80px;">
+    <div class="t">Any other harness</div>
+    <div class="s">Any system with a per-turn system prompt slot</div>
+  </div>
+
+  <!-- middle: store -->
+  <div class="g" style="left:460px;top:62px;">STORE · PLAIN TEXT</div>
+  <div class="box" style="left:460px;top:96px;width:520px;height:84px;">
+    <div class="t">Core zone · MEMORY.md</div>
+    <div class="s">Injected every turn · size declared by the implementation · only pointers and settled facts</div>
+  </div>
+  <div class="box" style="left:460px;top:202px;width:250px;height:96px;">
+    <div class="t">Topic zone</div>
+    <div class="s">memory/*.md · never injected · read on demand</div>
+  </div>
+  <div class="box" style="left:740px;top:202px;width:240px;height:96px;">
+    <div class="t">Timeline</div>
+    <div class="s">CHANGELOG.md · append-only · one line per change</div>
+  </div>
+  <div class="box" style="left:460px;top:320px;width:250px;height:96px;">
+    <div class="t">Derived layer</div>
+    <div class="s">_state/ · index, reports, cache · delete and rebuild</div>
+  </div>
+  <div class="box dashed" style="left:740px;top:320px;width:240px;height:96px;">
+    <div class="t">Library root</div>
+    <div class="s">MEMORY_DIR · plain files · portable across tools</div>
+  </div>
+
+  <!-- right: contracts -->
+  <div class="g" style="left:1060px;top:62px;">CONTRACTS · WHAT IS GUARANTEED</div>
+  <div class="box" style="left:1060px;top:96px;width:300px;height:84px;">
+    <div class="t">Injection contract</div>
+    <div class="s">Core only · no absolute paths · no credentials · re-inject after compaction</div>
+  </div>
+  <div class="box" style="left:1060px;top:202px;width:300px;height:96px;">
+    <div class="t">Conformance</div>
+    <div class="s">Levels L0–L3 · doctor JSON report · exit codes 0–5 · declare level and version</div>
+  </div>
+  <div class="box" style="left:1060px;top:320px;width:300px;height:96px;">
+    <div class="t">Safety</div>
+    <div class="s">No secrets in store · export and delete · deletion needs human confirmation</div>
+  </div>
+
+  <!-- bottom bar -->
+  <div class="g" style="left:40px;top:504px;">CONFORMANCE · RULES</div>
+  <div class="box" style="left:40px;top:534px;width:380px;height:104px;">
+    <div class="t">Levels</div>
+    <div class="s">L0 readable · L1 unique keys · L2 budget &amp; paths · L3 sources</div>
+  </div>
+  <div class="box" style="left:460px;top:534px;width:420px;height:104px;">
+    <div class="t">Rules</div>
+    <div class="s">S1–S13 · P1 · X1 · machine-checkable · run doctor</div>
+  </div>
+  <div class="box dashed" style="left:920px;top:534px;width:440px;height:104px;">
+    <div class="t">Reference values</div>
+    <div class="s">Any size, count or window in the specification is a default; implementations configure and declare their own</div>
+  </div>
+
+  <!-- wire labels -->
+  <div class="lbl" style="left:388px;top:118px;">injects core</div>
+  <div class="lbl" style="left:388px;top:212px;">reads / writes</div>
+  <div class="lbl" style="left:568px;top:186px;">index lines</div>
+  <div class="lbl" style="left:593px;top:304px;">rebuild</div>
+  <div class="lbl" style="left:988px;top:124px;">satisfies</div>
+
+  <div class="legend">
+    <span><i></i>Sync path · direct use</span>
+    <span><i class="dash"></i>Derived / optional / on demand</span>
+    <span>Gray text = what the box does</span>
+  </div>
+</div>
+</body>
+</html>

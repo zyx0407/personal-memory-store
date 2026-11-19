@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mss.dev/schema/report.schema.json",
+  "title": "doctor report",
+  "description": "Memory Store Specification 1.0 conformance report",
+  "type": "object",
+  "required": ["reportVersion", "spec", "store", "conformant", "errors", "checks", "metrics"],
+  "properties": {
+    "reportVersion": { "const": "1" },
+    "spec": { "type": "string", "pattern": "^mss/[0-9]+\\.[0-9]+$" },
+    "store": {
+      "type": "object",
+      "required": ["declared", "verified"],
+      "properties": {
+        "declared": { "enum": ["L0", "L1", "L2", "L3", null] },
+        "verified": { "enum": ["L0", "L1", "L2", "L3", "none"] }
+      },
+      "additionalProperties": false
+    },
+    "conformant": { "type": "boolean" },
+    "errors": { "type": "integer", "minimum": 0 },
+    "warns": { "type": "integer", "minimum": 0 },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "severity", "ok", "detail"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^(S[0-9]+|P[0-9]+|X[0-9]+|W[0-9]+)$" },
+          "severity": { "enum": ["error", "warn", "info"] },
+          "ok": { "type": "boolean" },
+          "detail": { "type": "string", "maxLength": 200 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "required": ["coreBytes", "coreLimit", "topicLimit", "topicBytesMax", "entries", "topics", "timelineEntries"],
+      "properties": {
+        "coreBytes": { "type": "integer", "minimum": 0 },
+        "coreLimit": { "type": "integer", "minimum": 1 },
+        "topicLimit": { "type": "integer", "minimum": 1 },
+        "topicBytesMax": { "type": "integer", "minimum": 0 },
+        "entries": { "type": "integer", "minimum": 0 },
+        "topics": { "type": "integer", "minimum": 0 },
+        "timelineEntries": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

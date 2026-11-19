@@ -1,0 +1,32 @@
+长期记忆库规范（Memory Store Specification）
+Copyright (c) 2026 zyx0407
+
+本仓库采用双许可：
+
+1. 规范文本（SPEC.md、SPEC.en.md、README.md、README.en.md、docs/、schema/ 中的文档与示例文本）
+   采用 CC BY 4.0（Creative Commons Attribution 4.0 International）。
+   许可证全文：https://creativecommons.org/licenses/by/4.0/legalcode
+
+   你可以复制、分发、修改，用于任何目的（含商业），
+   条件是在衍生物中保留署名与许可声明，并标明是否修改。
+
+2. 代码与技能包（skills/ 下的脚本、schema 的机器可读文件、示例代码）
+   采用 MIT License：
+
+   Permission is hereby granted, free of charge, to any person obtaining a copy
+   of this software and associated documentation files (the "Software"), to deal
+   in the Software without restriction, including without limitation the rights
+   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   copies of the Software, and to permit persons to whom the Software is
+   furnished to do so, subject to the following conditions:
+
+   The above copyright notice and this permission notice shall be included in all
+   copies or substantial portions of the Software.
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   SOFTWARE.
