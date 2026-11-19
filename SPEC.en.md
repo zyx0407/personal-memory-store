@@ -13,6 +13,8 @@
 
 This specification defines the file format, entry syntax and read-only conformance check of a **personal** long-term memory store. It targets a single user (one person, one store, one writer); team collaboration, multi-tenancy and cloud memory platforms are out of scope. Conformance applies to the store only, in four levels `L0`–`L3`. There are two commands: `init` (create a store) and `doctor` (read-only check producing a JSON report). Writing, export and indexing are implementation-defined; recommended practices are in Appendix D.
 
+> This is our own version and its self-check rules, **not a standard**. Take the structure, leave the rules, or ignore the whole thing.
+
 ## 1. Scope
 
 1. Store layout and encoding;

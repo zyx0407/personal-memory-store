@@ -1,70 +1,41 @@
-# Personal Memory Store Specification
+# A Personal Memory Library · Reference Structure
 
-A long-term memory format for **one person**: one owner, one store, one harness that can touch the disk — the "who I am, what I lived through, why I decided this" written as portable plain text. One `MEMORY.md` core injected every turn, details in `memory/` read on demand, an append-only `CHANGELOG.md`, and a rebuildable `_state/` layer.
+One person, one store, a few plain-text files: the core is injected every turn, details are read on demand, the timeline only appends, the derived layer can be deleted and rebuilt.
 
-Not for team collaboration, multi-tenancy or cloud memory platforms; scoping, concurrency and permissions for those are out of scope.
+**This is our practice, not a standard.** Take the zoning, leave the rules, or take the whole thing and change it.
 
-**Release 1.0.0** (2026-11-19).
+![Reference structure](docs/architecture-en.png)
 
-## Documents
+## Four layers
 
-| File | What it is |
-| --- | --- |
-| [`SPEC.md`](SPEC.md) | The specification 1.0 (Chinese) |
-| [`SPEC.en.md`](SPEC.en.md) | The specification 1.0 (English) |
-| [`schema/mss.schema.json`](schema/mss.schema.json) | JSON Schema for `mss.json` |
-| [`schema/report.schema.json`](schema/report.schema.json) | JSON Schema for the `doctor` report |
-| [`skills/memory-store/SKILL.md`](skills/memory-store/SKILL.md) | Installable DSH skill (build / write / check / migrate) |
-| [dsh-personal-memory-store](https://github.com/zyx0407/dsh-personal-memory-store) | DSH plugin (separate repo: `memory_init` / `memory_doctor`) |
-| [`docs/architecture-en.png`](docs/architecture-en.png) · [`docs/architecture-zh.png`](docs/architecture-zh.png) | Four-zone diagram (English / Chinese) |
-| [`CHANGELOG.md`](CHANGELOG.md) | Version history |
-| [`LICENSE`](LICENSE) | Text CC BY 4.0; code and skill MIT |
+| Layer | What lives there | How it is used |
+| --- | --- | --- |
+| Core `MEMORY.md` | identity, preferences, stable rules, pointers | injected every turn, ≤10KB, conclusions only |
+| Shards `memory/*.md` | topic facts | read via an index, never auto-injected |
+| Timeline `CHANGELOG.md` | one line per day, only what changed | append-only |
+| Derived `_state/` | index, health checks, candidates | rebuildable, never the truth |
 
-## How to read
+## Three ways in
 
-- **Implementing a store**: read §3–§9 and §11; self-check against §9.1; declare your level in `mss.json` per §4.1.
-- **Wiring it into a harness**: read §7 and Appendix B (non-normative).
-- **Using it directly**: install `skills/memory-store/` and follow SKILL.md; run `python skills/memory-store/scripts/check.py <root>` for a structural check.
+- **Just want the idea**: look at the diagram. It is closer to real use than any prose.
+- **Want to run it**: `SPEC.md` is our version and its self-check rules. Copy it and it runs, but you do not have to obey it.
+- **Want your own**: give the diagram to your AI and let it ask you ten questions first — what to remember, how you speak, how often you look, what you fear losing — then design the structure together. The rules are yours.
 
-## Minimal start
+## Boundaries
 
-```
-<root>/
-  MEMORY.md
-  memory/
-  CHANGELOG.md
-  mss.json          # optional
-```
+- single user, single writer, plain text
+- not a database, not a team knowledge base
+- no panels, no UI, no extensions, no compatibility promise
+- a share, not a product; issues are welcome, slowly
 
-`mss.json`:
+## What is in this repository
 
-```json
-{ "mss": "1.0", "store": "L2", "limits": { "core": 10240, "topic": 12288 } }
-```
+- `SPEC.md` / `SPEC.en.md`: our version (Chinese / English), safe to ignore entirely
+- `docs/architecture-zh.png` / `architecture-en.png`: the diagram above
+- `CHANGELOG.md`, `LICENSE`
 
-An entry:
-
-```
-- 2026-11-19 The memory library will be open-sourced {key=opensource.decision, type=decision, src=memory/release.md:28}
-```
-
-## DSH plugin
-
-The plugin lives in its own repository: [`dsh-personal-memory-store`](https://github.com/zyx0407/dsh-personal-memory-store). It exposes:
-
-- `memory_init(root)` — create the store skeleton
-- `memory_doctor(root, format)` — check against spec 1.0, return a JSON report or a text summary
-
-Install from DSH **Plugins → Add plugin** with `https://github.com/zyx0407/dsh-personal-memory-store` (tested by the author), or `plugin_manager install_bundle` with the same URL. The npm name is `dsh-personal-memory-store`, not published yet.
-
-## Reference implementation
-
-The author's own implementation (the `mss` CLI, health checks, indexer) is not shipped here; this repository releases the specification, schemas, skill and templates only. Appendix D records recommended write/export practices.
-
-## Status
-
-**1.0.0 stable**: the rule set is frozen, `1.x` is compatible, rule changes go to a new major version. Both Chinese and English specs are available.
+Tooling (skill, plugin, schemas) is **not** shipped here; whether you want tools, and which, is your call.
 
 ## License
 
-Text CC BY 4.0; code and skill MIT. See [`LICENSE`](LICENSE).
+Text CC BY 4.0; sample code (if any) MIT. See [`LICENSE`](LICENSE).

@@ -1,8 +1,8 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<title>个人记忆库规范 · 架构（中文）</title>
+<title>个人记忆库 · 参考结构</title>
 <style>
   :root {
     --bg: #f4efe6; --card: #fbf8f1;
@@ -43,89 +43,87 @@
       </marker>
     </defs>
 
-    <path d="M380 132 H452" stroke="#5b5448" stroke-width="1" marker-end="url(#ar)"/>
-    <path d="M380 226 H452" stroke="#5b5448" stroke-width="1" marker-end="url(#ar)"/>
-    <path d="M560 180 V194" stroke="#9a8f7c" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#ard)"/>
-    <path d="M585 298 V312" stroke="#9a8f7c" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#ard)"/>
-    <path d="M980 138 H1052" stroke="#9a8f7c" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#ard)"/>
+    <path id="p1" d="M380 130 H460" stroke="#5b5448" stroke-width="1" marker-end="url(#ar)"/>
+    <path id="p2" d="M380 130 H420 M420 130 V266 H460" stroke="#5b5448" stroke-width="1" marker-end="url(#ar)"/>
+    <path id="p3" d="M380 200 H1060" stroke="#5b5448" stroke-width="1" marker-end="url(#ar)"/>
+    <path id="p4" d="M380 314 H1060" stroke="#9a8f7c" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#ard)"/>
+    <path id="p5" d="M980 364 H1060" stroke="#5b5448" stroke-width="1" marker-end="url(#ar)"/>
+    <path id="p6" d="M720 504 V570" stroke="#9a8f7c" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#ard)"/>
   </svg>
 
-  <div class="h1">个人记忆库规范 · 架构<span>v1.0 · 四区 · 只读校验 · 一致性</span></div>
+  <div class="h1">个人记忆库 · 参考结构<span>四层 ＋ 写入三关 ＋ 读取三查 · 2026-11</span></div>
 
-  <div class="g" style="left:40px;top:62px;">使用方 · 怎么用</div>
-  <div class="box" style="left:40px;top:96px;width:340px;height:72px;">
-    <div class="t">Agent / harness</div>
-    <div class="s">每轮注入核心文件；通过命令读写</div>
+  <div class="g" style="left:40px;top:62px;">触发 · 入口</div>
+  <div class="box" style="left:40px;top:96px;width:340px;height:70px;">
+    <div class="t">一轮对话</div>
+    <div class="s">提问 / 纠正 / 追问；先读核心，再按需查分片</div>
   </div>
-  <div class="box" style="left:40px;top:190px;width:340px;height:72px;">
-    <div class="t">命令</div>
-    <div class="s">init · doctor</div>
+  <div class="box" style="left:40px;top:186px;width:340px;height:70px;">
+    <div class="t">收尾自检（每轮）</div>
+    <div class="s">半自动抽取 → 候选清单；确认后才写，不确认＝不写</div>
   </div>
-  <div class="box dashed" style="left:40px;top:284px;width:340px;height:80px;">
-    <div class="t">其它 harness</div>
-    <div class="s">任何有「每轮系统提示位」的宿主</div>
+  <div class="box dashed" style="left:40px;top:276px;width:340px;height:80px;">
+    <div class="t">核对与排查</div>
+    <div class="s">「现在是什么/多少/哪天/哪版」→ 先查再答<br>冲突当场办：能实证就实测定值</div>
   </div>
 
-  <div class="g" style="left:460px;top:62px;">存储 · 纯文本</div>
-  <div class="box" style="left:460px;top:96px;width:520px;height:84px;">
-    <div class="t">核心区 · MEMORY.md</div>
-    <div class="s">每轮注入 · 上限由实现声明 · 只放结论与索引行</div>
+  <div class="g" style="left:460px;top:62px;">库的四层 · 单写者</div>
+  <div class="box" style="left:460px;top:96px;width:520px;height:94px;">
+    <div class="t">核心 · MEMORY.md（常驻注入）</div>
+    <div class="s">身份 · 偏好 · 稳定规则 · 指针；上限 ≤10KB<br>每轮注入，不靠模型"想起来"</div>
   </div>
-  <div class="box" style="left:460px;top:202px;width:250px;height:96px;">
-    <div class="t">专题区</div>
-    <div class="s">memory/*.md · 不自动注入 · 按需读取</div>
+  <div class="box" style="left:460px;top:210px;width:520px;height:94px;">
+    <div class="t">分片 · memory/*.md（按需读取）</div>
+    <div class="s">专题事实；索引决定读哪片；不注入上下文<br>当前值只认分片，查不到就说"库里没写"</div>
   </div>
-  <div class="box" style="left:740px;top:202px;width:240px;height:96px;">
+  <div class="box" style="left:460px;top:324px;width:520px;height:80px;">
     <div class="t">时间线</div>
-    <div class="s">CHANGELOG.md · 只追加 · 一次改动一行</div>
+    <div class="s">变更记录＝一行一天（只记改了什么）<br>流水＝逐轮过程（只留最近窗口，更早压成按天）</div>
   </div>
-  <div class="box" style="left:460px;top:320px;width:250px;height:96px;">
-    <div class="t">派生层</div>
-    <div class="s">_state/ · 索引、报告、缓存 · 可删可重建</div>
-  </div>
-  <div class="box dashed" style="left:740px;top:320px;width:240px;height:96px;">
-    <div class="t">库根</div>
-    <div class="s">MEMORY_DIR · 纯文本 · 可跨工具搬运</div>
+  <div class="box" style="left:460px;top:424px;width:520px;height:80px;">
+    <div class="t">派生层（可重建，不当真源）</div>
+    <div class="s">体检 · 索引检索 · 评测 · 候选清单<br>脚本能查的数字一律现跑，库里不写死</div>
   </div>
 
-  <div class="g" style="left:1060px;top:62px;">契约 · 保证什么</div>
-  <div class="box" style="left:1060px;top:96px;width:300px;height:84px;">
-    <div class="t">注入契约</div>
-    <div class="s">只注入核心 · 无绝对路径 · 无凭据 · 压缩后重注入</div>
+  <div class="g" style="left:1060px;top:62px;">写入 · 读取 · 蒸馏</div>
+  <div class="box" style="left:1060px;top:96px;width:300px;height:130px;">
+    <div class="t">写入三关</div>
+    <div class="s">① 入口过滤：身份/偏好/稳定规则/长期目标才进核心<br>② 新旧判定：日期大的为准，旧行标「已废止」<br>③ 写入即归并：候选带「并入 → 片#条」</div>
   </div>
-  <div class="box" style="left:1060px;top:202px;width:300px;height:96px;">
-    <div class="t">一致性</div>
-    <div class="s">等级 L0–L3 · doctor JSON 报告 · 退出码 0–5 · 声明等级与版本</div>
+  <div class="box" style="left:1060px;top:246px;width:300px;height:96px;">
+    <div class="t">读取三查</div>
+    <div class="s">① 答前必检：先 search 或直读分片<br>② 数字现跑：体积/片数/余量不写死<br>③ 来源锚：每条能追到出处</div>
   </div>
-  <div class="box" style="left:1060px;top:320px;width:300px;height:96px;">
-    <div class="t">安全</div>
-    <div class="s">不存密钥 · 可导出可删除 · 删除需确认</div>
-  </div>
-
-  <div class="g" style="left:40px;top:504px;">一致性 · 规则</div>
-  <div class="box" style="left:40px;top:534px;width:380px;height:104px;">
-    <div class="t">等级</div>
-    <div class="s">L0 可读 · L1 键唯一 · L2 预算与路径 · L3 来源完整</div>
-  </div>
-  <div class="box" style="left:460px;top:534px;width:420px;height:104px;">
-    <div class="t">规则</div>
-    <div class="s">S1–S13 · P1 · X1 · 能机检的写进规则 · 跑 doctor</div>
-  </div>
-  <div class="box dashed" style="left:920px;top:534px;width:440px;height:104px;">
-    <div class="t">参考值</div>
-    <div class="s">文中的字节数、条数、窗口均为默认值；实现自行配置并声明</div>
+  <div class="box" style="left:1060px;top:362px;width:300px;height:88px;">
+    <div class="t">蒸馏</div>
+    <div class="s">流水 → 候选「我的草稿」→ 确认 → 写核心/分片<br>没确认＝当场否决，原文沉流水</div>
   </div>
 
-  <div class="lbl" style="left:388px;top:118px;">注入核心</div>
-  <div class="lbl" style="left:388px;top:212px;">读写</div>
-  <div class="lbl" style="left:568px;top:186px;">索引行</div>
-  <div class="lbl" style="left:593px;top:304px;">重建</div>
-  <div class="lbl" style="left:988px;top:124px;">满足</div>
+  <div class="g" style="left:40px;top:540px;">红线 · 体检 · 边界</div>
+  <div class="box" style="left:40px;top:570px;width:380px;height:120px;">
+    <div class="t">红线（硬上限）</div>
+    <div class="s">核心 ≤10KB · 单分片 ≤12KB · 全库 ≤400KB<br>变更记录 ≤50KB · 流水 ≤120KB<br>只归档不删 · 指针只落库内 · 单写者</div>
+  </div>
+  <div class="box" style="left:460px;top:570px;width:420px;height:120px;">
+    <div class="t">记忆体检（改库前必跑）</div>
+    <div class="s">ERROR / WARN · 断链 · 冲突 · stale-date · 重复<br>预算余量 · 来源覆盖 · 草稿积压<br>ERROR 不清零不落笔</div>
+  </div>
+  <div class="box" style="left:920px;top:570px;width:440px;height:120px;">
+    <div class="t">边界（2026-11）</div>
+    <div class="s">单用户 · 纯文本 · 单写者<br>不是数据库，也不是团队知识库<br>数字现跑，不写死；这是我们的做法，不是标准</div>
+  </div>
+
+  <div class="lbl" style="left:392px;top:118px;">读核心</div>
+  <div class="lbl" style="left:392px;top:252px;">按需查</div>
+  <div class="lbl" style="left:392px;top:188px;">写 → 三关</div>
+  <div class="lbl" style="left:392px;top:302px;">答前核对</div>
+  <div class="lbl" style="left:992px;top:352px;">蒸馏</div>
+  <div class="lbl" style="left:732px;top:532px;">体检在这层</div>
 
   <div class="legend">
-    <span><i></i>实线＝同步路径 · 直接使用</span>
-    <span><i class="dash"></i>虚线＝派生／可选／按需</span>
-    <span>灰字＝这块做什么</span>
+    <span><i></i>库内直连 / 读写</span>
+    <span><i class="dash"></i>校验 / 派生 / 按需查</span>
+    <span>灰字＝这块在干什么</span>
   </div>
 </div>
 </body>

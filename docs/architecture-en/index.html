@@ -1,15 +1,15 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Personal Memory Store Specification · architecture</title>
+<title>A Personal Memory Library · Reference Structure</title>
 <style>
   :root {
     --bg: #f4efe6; --card: #fbf8f1;
     --ink: #2b2926; --ink-2: #43403a; --muted: #5f5a4f;
     --line: #d8cfbe; --wire: #9a8f7c; --accent: #b08a3e;
     --mono: "Cascadia Mono", Consolas, "Noto Sans SC", monospace;
-    --sans: "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    --sans: "Source Han Sans SC", "Noto Sans SC", "Segoe UI", system-ui, sans-serif;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); }
@@ -18,14 +18,14 @@
   svg.wires { position: absolute; inset: 0; width: 1400px; height: 760px; }
   .box { position: absolute; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 11px 14px; }
   .box.dashed { border-style: dashed; border-color: var(--wire); background: transparent; }
-  .t { font-size: 14px; font-weight: 500; letter-spacing: .02em; }
-  .s { font-family: var(--mono); font-size: 10px; letter-spacing: .05em; color: var(--muted); margin-top: 4px; line-height: 1.7; }
+  .t { font-size: 13.5px; font-weight: 500; letter-spacing: .01em; }
+  .s { font-family: var(--mono); font-size: 9.5px; letter-spacing: .02em; color: var(--muted); margin-top: 4px; line-height: 1.6; }
   .g { position: absolute; font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; color: var(--muted); }
-  .h1 { position: absolute; left: 40px; top: 20px; font-size: 15px; font-weight: 600; letter-spacing: .04em; }
-  .h1 span { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: .08em; margin-left: 12px; }
-  .lbl { position: absolute; font-family: var(--mono); font-size: 9.5px; letter-spacing: .04em; color: var(--muted); }
+  .h1 { position: absolute; left: 40px; top: 20px; font-size: 15px; font-weight: 600; letter-spacing: .03em; }
+  .h1 span { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: .06em; margin-left: 12px; }
+  .lbl { position: absolute; font-family: var(--mono); font-size: 9.5px; letter-spacing: .03em; color: var(--muted); }
   .legend { position: absolute; left: 40px; bottom: 20px; display: flex; gap: 26px;
-            font-family: var(--mono); font-size: 10px; letter-spacing: .06em; color: var(--muted); }
+            font-family: var(--mono); font-size: 10px; letter-spacing: .05em; color: var(--muted); }
   .legend i { display: inline-block; width: 26px; height: 0; border-top: 1px solid var(--ink-2); margin-right: 8px; vertical-align: 4px; }
   .legend .dash { border-top: 1px dashed var(--wire); }
 </style>
@@ -43,98 +43,86 @@
       </marker>
     </defs>
 
-    <!-- harness → core: injection -->
-    <path d="M380 132 H452" stroke="#5b5448" stroke-width="1" marker-end="url(#ar)"/>
-    <!-- cli → topics: read / write -->
-    <path d="M380 226 H452" stroke="#5b5448" stroke-width="1" marker-end="url(#ar)"/>
-    <!-- core → topics: index lines -->
-    <path d="M560 180 V194" stroke="#9a8f7c" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#ard)"/>
-    <!-- topics → derived: index / rebuild -->
-    <path d="M585 298 V312" stroke="#9a8f7c" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#ard)"/>
-    <!-- core → contracts: satisfies -->
-    <path d="M980 138 H1052" stroke="#9a8f7c" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#ard)"/>
+    <path id="p1" d="M380 130 H460" stroke="#5b5448" stroke-width="1" marker-end="url(#ar)"/>
+    <path id="p2" d="M380 130 H420 M420 130 V266 H460" stroke="#5b5448" stroke-width="1" marker-end="url(#ar)"/>
+    <path id="p3" d="M380 200 H1060" stroke="#5b5448" stroke-width="1" marker-end="url(#ar)"/>
+    <path id="p4" d="M380 314 H1060" stroke="#9a8f7c" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#ard)"/>
+    <path id="p5" d="M980 364 H1060" stroke="#5b5448" stroke-width="1" marker-end="url(#ar)"/>
+    <path id="p6" d="M720 504 V570" stroke="#9a8f7c" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#ard)"/>
   </svg>
 
-  <div class="h1">Personal Memory Store Specification · architecture<span>v1.0 · four zones · check-only · conformance</span></div>
+  <div class="h1">A Personal Memory Library · Reference Structure<span>four layers + three write gates + three read checks · 2026-11</span></div>
 
-  <!-- left: consumers -->
-  <div class="g" style="left:40px;top:62px;">CONSUMERS · HOW IT IS USED</div>
-  <div class="box" style="left:40px;top:96px;width:340px;height:72px;">
-    <div class="t">Agent / harness</div>
-    <div class="s">Injects the core file every turn; calls commands</div>
+  <div class="g" style="left:40px;top:62px;">TRIGGERS · ENTRY</div>
+  <div class="box" style="left:40px;top:96px;width:340px;height:70px;">
+    <div class="t">One conversation turn</div>
+    <div class="s">Questions / corrections / follow-ups; read the core first, then shards on demand</div>
   </div>
-  <div class="box" style="left:40px;top:190px;width:340px;height:72px;">
-    <div class="t">CLI</div>
-    <div class="s">init · doctor</div>
+  <div class="box" style="left:40px;top:186px;width:340px;height:70px;">
+    <div class="t">End-of-turn check</div>
+    <div class="s">Semi-automatic extraction → candidate list; write only after confirmation</div>
   </div>
-  <div class="box dashed" style="left:40px;top:284px;width:340px;height:80px;">
-    <div class="t">Any other harness</div>
-    <div class="s">Any system with a per-turn system prompt slot</div>
+  <div class="box dashed" style="left:40px;top:276px;width:340px;height:92px;">
+    <div class="t">Verify &amp; troubleshoot</div>
+    <div class="s">"What is it / how many / which date / which version" → look it up first<br>Resolve conflicts on the spot</div>
   </div>
 
-  <!-- middle: store -->
-  <div class="g" style="left:460px;top:62px;">STORE · PLAIN TEXT</div>
-  <div class="box" style="left:460px;top:96px;width:520px;height:84px;">
-    <div class="t">Core zone · MEMORY.md</div>
-    <div class="s">Injected every turn · size declared by the implementation · only pointers and settled facts</div>
+  <div class="g" style="left:460px;top:62px;">FOUR LAYERS · ONE WRITER</div>
+  <div class="box" style="left:460px;top:96px;width:520px;height:94px;">
+    <div class="t">Core · MEMORY.md (always injected)</div>
+    <div class="s">Identity · preferences · stable rules · pointers; ≤10KB<br>Injected every turn, not "remembered" by the model</div>
   </div>
-  <div class="box" style="left:460px;top:202px;width:250px;height:96px;">
-    <div class="t">Topic zone</div>
-    <div class="s">memory/*.md · never injected · read on demand</div>
+  <div class="box" style="left:460px;top:210px;width:520px;height:94px;">
+    <div class="t">Shards · memory/*.md (read on demand)</div>
+    <div class="s">Topic facts; the index decides which shard to read; never injected<br>Current values live only in shards; if missing, say "not in the store"</div>
   </div>
-  <div class="box" style="left:740px;top:202px;width:240px;height:96px;">
+  <div class="box" style="left:460px;top:324px;width:520px;height:80px;">
     <div class="t">Timeline</div>
-    <div class="s">CHANGELOG.md · append-only · one line per change</div>
+    <div class="s">Change log = one line per day (only what changed)<br>Stream = per-turn process (recent window only, older compressed by day)</div>
   </div>
-  <div class="box" style="left:460px;top:320px;width:250px;height:96px;">
-    <div class="t">Derived layer</div>
-    <div class="s">_state/ · index, reports, cache · delete and rebuild</div>
-  </div>
-  <div class="box dashed" style="left:740px;top:320px;width:240px;height:96px;">
-    <div class="t">Library root</div>
-    <div class="s">MEMORY_DIR · plain files · portable across tools</div>
+  <div class="box" style="left:460px;top:424px;width:520px;height:80px;">
+    <div class="t">Derived layer (rebuildable, never the truth)</div>
+    <div class="s">Checks · index/search · evals · candidate list<br>Numbers are computed at runtime, never hard-coded</div>
   </div>
 
-  <!-- right: contracts -->
-  <div class="g" style="left:1060px;top:62px;">CONTRACTS · WHAT IS GUARANTEED</div>
-  <div class="box" style="left:1060px;top:96px;width:300px;height:84px;">
-    <div class="t">Injection contract</div>
-    <div class="s">Core only · no absolute paths · no credentials · re-inject after compaction</div>
+  <div class="g" style="left:1060px;top:62px;">WRITE · READ · DISTILL</div>
+  <div class="box" style="left:1060px;top:96px;width:300px;height:130px;">
+    <div class="t">Three write gates</div>
+    <div class="s">① Entry filter: only identity / preferences / stable rules / long-term goals reach the core<br>② Recency: newer date wins; mark the old line superseded<br>③ Merge on write: candidate carries "merge → shard#item"</div>
   </div>
-  <div class="box" style="left:1060px;top:202px;width:300px;height:96px;">
-    <div class="t">Conformance</div>
-    <div class="s">Levels L0–L3 · doctor JSON report · exit codes 0–5 · declare level and version</div>
+  <div class="box" style="left:1060px;top:246px;width:300px;height:96px;">
+    <div class="t">Three read checks</div>
+    <div class="s">① Check before answering: search or read the shard first<br>② Compute numbers: sizes/counts/headroom are never hard-coded<br>③ Provenance: every entry is traceable</div>
   </div>
-  <div class="box" style="left:1060px;top:320px;width:300px;height:96px;">
-    <div class="t">Safety</div>
-    <div class="s">No secrets in store · export and delete · deletion needs human confirmation</div>
-  </div>
-
-  <!-- bottom bar -->
-  <div class="g" style="left:40px;top:504px;">CONFORMANCE · RULES</div>
-  <div class="box" style="left:40px;top:534px;width:380px;height:104px;">
-    <div class="t">Levels</div>
-    <div class="s">L0 readable · L1 unique keys · L2 budget &amp; paths · L3 sources</div>
-  </div>
-  <div class="box" style="left:460px;top:534px;width:420px;height:104px;">
-    <div class="t">Rules</div>
-    <div class="s">S1–S13 · P1 · X1 · machine-checkable · run doctor</div>
-  </div>
-  <div class="box dashed" style="left:920px;top:534px;width:440px;height:104px;">
-    <div class="t">Reference values</div>
-    <div class="s">Any size, count or window in the specification is a default; implementations configure and declare their own</div>
+  <div class="box" style="left:1060px;top:356px;width:300px;height:106px;">
+    <div class="t">Distill</div>
+    <div class="s">Stream → candidate draft → confirmation → write core/shard<br>No confirmation = rejected; the original stays in the stream</div>
   </div>
 
-  <!-- wire labels -->
-  <div class="lbl" style="left:388px;top:118px;">injects core</div>
-  <div class="lbl" style="left:388px;top:212px;">reads / writes</div>
-  <div class="lbl" style="left:568px;top:186px;">index lines</div>
-  <div class="lbl" style="left:593px;top:304px;">rebuild</div>
-  <div class="lbl" style="left:988px;top:124px;">satisfies</div>
+  <div class="g" style="left:40px;top:540px;">RED LINES · HEALTH · BOUNDARIES</div>
+  <div class="box" style="left:40px;top:570px;width:380px;height:120px;">
+    <div class="t">Red lines (hard limits)</div>
+    <div class="s">Core ≤10KB · shard ≤12KB · whole store ≤400KB<br>Change log ≤50KB · stream ≤120KB<br>Archive, don't delete · pointers stay inside · one writer</div>
+  </div>
+  <div class="box" style="left:460px;top:570px;width:420px;height:120px;">
+    <div class="t">Health check (before changing the store)</div>
+    <div class="s">ERROR / WARN · broken links · conflicts · stale dates · duplicates<br>Budget headroom · provenance coverage · draft backlog<br>ERROR must be zero before writing</div>
+  </div>
+  <div class="box" style="left:920px;top:570px;width:440px;height:120px;">
+    <div class="t">Boundaries (2026-11)</div>
+    <div class="s">Single user · plain text · one writer<br>Not a database, not a team knowledge base<br>Numbers at runtime; this is our practice, not a standard</div>
+  </div>
+
+  <div class="lbl" style="left:392px;top:118px;">read core</div>
+  <div class="lbl" style="left:392px;top:252px;">on demand</div>
+  <div class="lbl" style="left:392px;top:188px;">write → gates</div>
+  <div class="lbl" style="left:392px;top:302px;">verify first</div>
+  <div class="lbl" style="left:992px;top:352px;">distill</div>
+  <div class="lbl" style="left:732px;top:532px;">checks here</div>
 
   <div class="legend">
-    <span><i></i>Sync path · direct use</span>
-    <span><i class="dash"></i>Derived / optional / on demand</span>
+    <span><i></i>Direct / read-write</span>
+    <span><i class="dash"></i>Verify / derived / on demand</span>
     <span>Gray text = what the box does</span>
   </div>
 </div>
