@@ -15,6 +15,7 @@
 | [`schema/mss.schema.json`](schema/mss.schema.json) | `mss.json` 的 JSON Schema |
 | [`schema/report.schema.json`](schema/report.schema.json) | `doctor` 报告的 JSON Schema |
 | [`skills/memory-store/SKILL.md`](skills/memory-store/SKILL.md) | 可安装到 DSH 的技能包（建库／写条目／自检／迁移） |
+| [dsh-personal-memory-store](https://github.com/zyx0407/dsh-personal-memory-store) | DSH 插件（独立仓库，`memory_init`／`memory_doctor`） |
 | [`docs/architecture-zh.png`](docs/architecture-zh.png) · [`docs/architecture-en.png`](docs/architecture-en.png) | 四区结构图（中文／英文） |
 | [`CHANGELOG.md`](CHANGELOG.md) | 版本变更 |
 | [`LICENSE`](LICENSE) | 文本 CC BY 4.0；代码与技能 MIT |
@@ -49,12 +50,12 @@
 
 ## DSH 插件
 
-[`dsh-plugin/dsh-personal-memory-store/`](dsh-plugin/dsh-personal-memory-store/) 是一个 DSH Host 插件包，注册两个工具：
+插件单独成库：[`dsh-personal-memory-store`](https://github.com/zyx0407/dsh-personal-memory-store)。注册两个工具：
 
 - `memory_init(root)`：建库骨架
 - `memory_doctor(root, format)`：按 1.0 规范体检，返回 JSON 报告或文字摘要
 
-安装：DSH **Plugins → Add plugin → 选本地目录**，或 `plugin_manager install_bundle` 指向该目录。已在作者本机装测（2026-11-19）；npm 包名 `dsh-personal-memory-store` 已预留，尚未发布。
+安装：DSH **Plugins → Add plugin**，填 `https://github.com/zyx0407/dsh-personal-memory-store`（作者已实测可装）；或 `plugin_manager install_bundle` 用同一地址。npm 包名同名 `dsh-personal-memory-store`，尚未发布。
 
 ## 参考实现
 

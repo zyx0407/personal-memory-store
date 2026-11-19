@@ -15,6 +15,7 @@ Not for team collaboration, multi-tenancy or cloud memory platforms; scoping, co
 | [`schema/mss.schema.json`](schema/mss.schema.json) | JSON Schema for `mss.json` |
 | [`schema/report.schema.json`](schema/report.schema.json) | JSON Schema for the `doctor` report |
 | [`skills/memory-store/SKILL.md`](skills/memory-store/SKILL.md) | Installable DSH skill (build / write / check / migrate) |
+| [dsh-personal-memory-store](https://github.com/zyx0407/dsh-personal-memory-store) | DSH plugin (separate repo: `memory_init` / `memory_doctor`) |
 | [`docs/architecture-en.png`](docs/architecture-en.png) · [`docs/architecture-zh.png`](docs/architecture-zh.png) | Four-zone diagram (English / Chinese) |
 | [`CHANGELOG.md`](CHANGELOG.md) | Version history |
 | [`LICENSE`](LICENSE) | Text CC BY 4.0; code and skill MIT |
@@ -49,12 +50,12 @@ An entry:
 
 ## DSH plugin
 
-[`dsh-plugin/dsh-personal-memory-store/`](dsh-plugin/dsh-personal-memory-store/) is a DSH Host bundle exposing two tools:
+The plugin lives in its own repository: [`dsh-personal-memory-store`](https://github.com/zyx0407/dsh-personal-memory-store). It exposes:
 
 - `memory_init(root)` — create the store skeleton
 - `memory_doctor(root, format)` — check against spec 1.0, return a JSON report or a text summary
 
-Install from DSH **Plugins → Add plugin → local directory**, or `plugin_manager install_bundle` pointing at that folder. Installed and tested on the author's machine (2026-11-19); the npm name `dsh-personal-memory-store` is reserved, not published yet.
+Install from DSH **Plugins → Add plugin** with `https://github.com/zyx0407/dsh-personal-memory-store` (tested by the author), or `plugin_manager install_bundle` with the same URL. The npm name is `dsh-personal-memory-store`, not published yet.
 
 ## Reference implementation
 

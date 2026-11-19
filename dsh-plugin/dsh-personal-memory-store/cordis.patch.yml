@@ -1,4 +1,0 @@
-- insert:
-    - id: personal-memory-store
-      name: 'dsh-personal-memory-store'
-      config: {}
