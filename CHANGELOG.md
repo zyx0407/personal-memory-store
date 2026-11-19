@@ -15,7 +15,7 @@
 - 新增可选元数据键：`type`（fact/preference/decision/event）、`valid`（事实生效日）
 - 新增：`schema/mss.schema.json`、`schema/report.schema.json`
 - 新增：技能包 `skills/memory-store/`（可安装到 DSH）
-- 新增：DSH 插件包（独立仓库 [dsh-personal-memory-store](https://github.com/zyx0407/dsh-personal-memory-store)：`memory_init` / `memory_doctor`，已用 GitHub 地址实装验证）
+- 已移除：DSH 插件与工具（不随分享版发布）
 - 新增：附录 E（Mem0／Letta／Zep／Cognee／MemOS 对照）
 - 许可：文本 CC BY 4.0；代码与技能 MIT
 - 版本策略：`1.x` 主版本兼容；规则变更进入新主版本
